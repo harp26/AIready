@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Usage Survey — Leadership Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Noto+Sans+Gujarati:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --card: #FFFFFF;
+    --accent: #1A5CDB;
+    --accent-light: #EBF0FD;
+    --accent-dark: #0F3E9E;
+    --success: #1A7A4A;
+    --success-light: #E8F5EE;
+    --text: #1A1A1A;
+    --text-2: #4A4A4A;
+    --text-3: #888;
+    --border: #E0DDD6;
+    --border-focus: #1A5CDB;
+    --shadow: 0 2px 16px rgba(26,92,219,0.07);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .page-header {
+    background: var(--accent);
+    color: white;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .header-title { font-size: 15px; font-weight: 600; }
+  .header-sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+  .progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.25);
+  }
+  .progress-fill {
+    height: 100%;
+    background: white;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .container {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  .screen { display: none; animation: fadeUp 0.3s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 22px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .badge-admin { background: #FFF3E0; color: #BF6000; }
+  .badge-student { background: var(--accent-light); color: var(--accent); }
+  .badge-setup { background: #E8F5EE; color: #1A7A4A; }
+  .badge-layer { background: #F3E8FF; color: #6B21A8; }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .q-en {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+
+  .q-gu {
+    font-family: 'Noto Sans Gujarati', 'Sora', sans-serif;
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 2px;
+  }
+
+  .q-hi {
+    font-size: 13px;
+    color: var(--text-3);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 18px; }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 15px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: white;
+    user-select: none;
+  }
+
+  .opt:hover { border-color: var(--accent); background: var(--accent-light); }
+  .opt.selected { border-color: var(--accent); background: var(--accent-light); }
+  .opt.selected .check-box { background: var(--accent); border-color: var(--accent); }
+  .opt.selected .check-box::after { opacity: 1; }
+
+  .check-box {
+    width: 18px; height: 18px;
+    min-width: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .check-box.square { border-radius: 4px; }
+  .check-box::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 10px; height: 10px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .check-box.square::after {
+    top: 2px; left: 5px;
+    width: 5px; height: 9px;
+    background: none;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    border-radius: 0;
+    transform: rotate(45deg);
+  }
+
+  .opt-text { flex: 1; }
+  .opt-en { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .opt-gu { font-family: 'Noto Sans Gujarati', sans-serif; font-size: 13px; color: var(--text-2); line-height: 1.6; }
+  .opt-hi { font-size: 12px; color: var(--text-3); }
+
+  .field-group { margin-bottom: 14px; }
+  .field-label { font-size: 13px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; display: block; }
+  .field-hint { font-size: 12px; color: var(--text-3); margin-bottom: 5px; }
+
+  input[type=text], input[type=password], select, textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: 'Sora', sans-serif;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.15s;
+    outline: none;
+    appearance: none;
+  }
+
+  input[type=text]:focus, input[type=password]:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(26,92,219,0.1);
+  }
+
+  textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-2);
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover { background: var(--bg); }
+
+  .btn-copy {
+    background: #E8F5EE;
+    color: #1A7A4A;
+    border: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Sora', sans-serif;
+    font-weight: 500;
+  }
+
+  .nav-row {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    margin-top: 6px;
+  }
+
+  .info-box {
+    background: var(--accent-light);
+    border: 1px solid #BDD0FA;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--accent-dark);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .warn-box {
+    background: #FFF8E1;
+    border: 1px solid #FFD54F;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #7A5500;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .success-box {
+    background: var(--success-light);
+    border: 1px solid #A8D5B8;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .success-icon {
+    width: 56px; height: 56px;
+    background: var(--success);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 26px;
+  }
+
+  .code-block {
+    background: #1A1A2E;
+    color: #A8D8A8;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin-bottom: 12px;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .step-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 26px; height: 26px;
+    min-width: 26px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+  .step-text { font-size: 13px; color: var(--text-2); line-height: 1.6; flex: 1; }
+  .step-text strong { color: var(--text); font-weight: 600; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+  }
+
+  .lang-select-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .lang-btn {
+    padding: 16px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.18s;
+    background: white;
+  }
+  .lang-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+  .lang-btn .lang-script { font-size: 22px; margin-bottom: 4px; }
+  .lang-btn .lang-name { font-size: 12px; font-weight: 500; color: var(--text-2); }
+
+  .error-msg { font-size: 12px; color: #C0392B; margin-top: 5px; }
+
+  .profile-tier {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .tier-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .watermark {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 30px;
+    padding-bottom: 20px;
+  }
+
+  @media (max-width: 400px) {
+    .lang-select-grid { grid-template-columns: 1fr; }
+    h2 { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-icon">🎓</div>
+  <div>
+    <div class="header-title">AI Usage Survey</div>
+    <div class="header-sub" id="header-sub">Leadership Program — Pre-Course</div>
+  </div>
+</div>
+<div class="progress-bar">
+  <div class="progress-fill" id="progress" style="width:0%"></div>
+</div>
+
+<div class="container">
+
+<!-- ════════════════════════════════
+     SCREEN: ENTRY
+════════════════════════════════ -->
+<div class="screen active" id="s-entry">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-admin">Welcome</span>
+    <h2>AI Usage Survey</h2>
+    <p>Before we begin our Leadership Program, we'd like to understand your experience with AI tools. This takes 3–5 minutes.</p>
+    <p style="font-family:'Noto Sans Gujarati',sans-serif;font-size:14px;color:var(--text-2)">
+      આ સર્વે Leadership Program પહેલાં AI ટૂલ્સ સાથેનો તમારો અનુભव સమजवा माटे छे.
+    </p>
+    <hr class="divider">
+    <p style="font-size:13px;color:var(--text-3)">Are you a facilitator setting up this survey, or a student filling it?</p>
+    <div class="options" style="margin-top:10px">
+      <div class="opt" onclick="go('s-admin-login')">
+        <div class="check-box"></div>
+        <div class="opt-text">
+          <div class="opt-en">🔧 Facilitator / Admin</div>
+          <div class="opt-hi">Configure batch settings & Google Sheet</div>
+        </div>
+      </div>
+      <div class="opt" onclick="go('s-lang')">
+        <div class="check-box"></div>
+        <div class="opt-text">
+          <div class="opt-en">📝 Student / Participant</div>
+          <div class="opt-gu">વિદ્યાર્થી — સર્વે ભરો</div>
+          <div class="opt-hi">छात्र — सर्वे भरें</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: ADMIN LOGIN
+════════════════════════════════ -->
+<div class="screen" id="s-admin-login">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-admin">Admin Access</span>
+    <h2>Facilitator login</h2>
+    <p>Enter the admin password to configure this survey for your batch.</p>
+    <div class="field-group">
+      <label class="field-label">Password</label>
+      <input type="password" id="admin-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPass()" />
+      <div class="error-msg" id="pass-err" style="display:none">Incorrect password. Please try again.</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="checkPass()">Enter Admin Panel →</button>
+      <button class="btn btn-ghost" onclick="go('s-entry')">← Back</button>
+    </div>
+    <hr class="divider">
+    <p style="font-size:12px;color:var(--text-3)">Default password is <strong>admin123</strong> — change this in the HTML file before sharing with students.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: ADMIN PANEL
+════════════════════════════════ -->
+<div class="screen" id="s-admin">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-admin">Admin Panel</span>
+    <h2>Configure your batch</h2>
+    <div class="field-group">
+      <label class="field-label">Batch / Group name <span style="color:#C0392B">*</span></label>
+      <div class="field-hint">This label appears on every response row in your Google Sheet.</div>
+      <input type="text" id="batch-name" placeholder="e.g. Leadership Batch 1 — May 2026" />
+    </div>
+    <div class="field-group">
+      <label class="field-label">Google Apps Script URL</label>
+      <div class="field-hint">Paste the Web App URL after completing setup below.</div>
+      <input type="text" id="sheet-url" placeholder="https://script.google.com/macros/s/..." />
+    </div>
+    <div id="admin-status" class="warn-box">⚠ Google Sheet not connected. Responses will only display on screen until you connect.</div>
+    <button class="btn btn-primary" onclick="saveAdmin()">✓ Save batch & activate</button>
+  </div>
+
+  <div class="card">
+    <span class="badge badge-setup">One-time Google Sheet Setup</span>
+    <h3>Connect your Google Sheet in 5 steps</h3>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-text">Create a <strong>blank Google Sheet</strong> in your Google account. Name it anything — e.g. "AI Survey Responses".</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-text">In the Sheet, click <strong>Extensions → Apps Script</strong>. A new tab opens with a code editor.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-text">Delete all existing code. Paste the script below <strong>exactly as-is</strong>. Then click Save (💾).</div>
+    </div>
+
+    <div class="code-block" id="apps-script-code">const SHEET_NAME = "Responses";
+
+function doPost(e) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow([
+        "Timestamp","Batch","Name","Stream",
+        "Study Medium","Background","AI Layer",
+        "Tools Used","Usage Purpose","Language Used",
+        "Interaction Mode","Detailed Prompting",
+        "Power Uses","Mentor Willing","Open Answer"
+      ]);
+      sheet.setFrozenRows(1);
+    }
+    const data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      new Date().toLocaleString("en-IN"),
+      data.batch || "Not set",
+      data.name || "Anonymous",
+      data.stream || "",
+      data.medium || "",
+      data.background || "",
+      data.layer || "",
+      (data.tools || []).join(", "),
+      (data.purpose || []).join(", "),
+      data.langUsed || "",
+      data.interact || "",
+      data.detailedPrompt || "",
+      (data.powerUse || []).join(", "),
+      data.mentor || "",
+      data.openAnswer || ""
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({status:"ok"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:"error",msg:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  return ContentService.createTextOutput("Survey endpoint is active.");
+}</div>
+    <button class="btn-copy" onclick="copyScript()">📋 Copy script</button>
+    <span id="copy-ok" style="font-size:12px;color:var(--success);margin-left:10px;display:none">✓ Copied!</span>
+
+    <hr class="divider">
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-text">Click <strong>Deploy → New deployment</strong>. Set Type to <strong>Web app</strong>. Set "Who has access" to <strong>Anyone</strong>. Click Deploy. <strong>Authorize</strong> when prompted.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div class="step-text">Copy the <strong>Web App URL</strong> that appears. Paste it in the field above and click Save.</div>
+    </div>
+
+    <div class="info-box" style="margin-top:4px">💡 You only do this once. For new batches, just change the batch name — the same URL works forever.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: LANGUAGE SELECT
+════════════════════════════════ -->
+<div class="screen" id="s-lang">
+  <div class="card" style="margin-top:10px">
+    <h2>Choose your language</h2>
+    <p style="margin-bottom:16px">All questions will appear in English with Gujarati/Hindi below for reference.</p>
+    <div class="lang-select-grid">
+      <div class="lang-btn" onclick="setLang('en');go('s-profile')">
+        <div class="lang-script">🇮🇳</div>
+        <div class="lang-name">English</div>
+      </div>
+      <div class="lang-btn" onclick="setLang('gu');go('s-profile')">
+        <div class="lang-script" style="font-family:'Noto Sans Gujarati',sans-serif">ગુ</div>
+        <div class="lang-name">ગુજ + Eng</div>
+      </div>
+      <div class="lang-btn" onclick="setLang('hi');go('s-profile')">
+        <div class="lang-script">हि</div>
+        <div class="lang-name">हिं + Eng</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-3)">You can type your answers in any language — Gujarati, Hindi, or English.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: PROFILE
+════════════════════════════════ -->
+<div class="screen" id="s-profile">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-student">About You</span>
+    <h2>A few details first</h2>
+    <p>This helps us design sessions that suit <em>you</em> — not a generic program. / <span style="font-family:'Noto Sans Gujarati',sans-serif">આ અમને તમારા માટે yogy session design કरवामां मदद करे छे.</span></p>
+
+    <div class="field-group">
+      <label class="field-label">Name <span style="font-weight:300;color:var(--text-3)">(optional — add your name for personalised guidance)</span></label>
+      <input type="text" id="inp-name" placeholder="Your name / તમારું નામ / आपका नाम" />
+    </div>
+    <div class="field-group">
+      <label class="field-label">Course / Stream *</label>
+      <select id="inp-stream">
+        <option value="">-- Select your stream --</option>
+        <option>Engineering / B.Tech</option>
+        <option>Commerce / BBA</option>
+        <option>MBA</option>
+        <option>Science / B.Sc</option>
+        <option>Arts / B.A</option>
+        <option>Nursing / B.Sc Nursing</option>
+        <option>Pharmacy / B.Pharm</option>
+        <option>Physiotherapy / BPT</option>
+        <option>BEd / Education</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Medium of study *</label>
+      <select id="inp-medium">
+        <option value="">-- Select --</option>
+        <option>English</option>
+        <option>Gujarati</option>
+        <option>Hindi</option>
+        <option>English + Gujarati mix</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Your background *</label>
+      <select id="inp-bg">
+        <option value="">-- Select --</option>
+        <option>Urban — City (શહેर)</option>
+        <option>Semi-urban — Town (નगर)</option>
+        <option>Rural — Village (ગ્રામ)</option>
+      </select>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="validateProfile()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q1 — Gate question
+════════════════════════════════ -->
+<div class="screen" id="s-q1">
+  <div class="card" style="margin-top:10px">
+    <div class="q-en">Have you ever used any AI tool?</div>
+    <div class="q-gu">શું તmే ક્યારेय कोई AI टूल वापर्यूं छे?</div>
+    <div class="q-hi">क्या आपने कभी कोई AI टूल इस्तेमाल किया है?</div>
+    <div class="options">
+      <div class="opt" id="q1-yes" onclick="selSingle('q1','yes',this);setTimeout(()=>go('s-q2'),300)">
+        <div class="check-box"></div>
+        <div class="opt-text">
+          <div class="opt-en">Yes — I use AI tools</div>
+          <div class="opt-gu">હા — AI ટૂl वापरूं छूं</div>
+          <div class="opt-hi">हाँ — AI tools उपयोग करता/करती हूँ</div>
+        </div>
+      </div>
+      <div class="opt" id="q1-no" onclick="selSingle('q1','no',this);setTimeout(()=>go('s-q1b'),300)">
+        <div class="check-box"></div>
+        <div class="opt-text">
+          <div class="opt-en">No — I have not used any AI tool</div>
+          <div class="opt-gu">ના — AI ટૂल ઉपयोग नथी करयूं</div>
+          <div class="opt-hi">नहीं — कोई AI टूल उपयोग नहीं किया</div>
+        </div>
+      </div>
+      <div class="opt" id="q1-ns" onclick="selSingle('q1','notsure',this);setTimeout(()=>go('s-q1b'),300)">
+        <div class="check-box"></div>
+        <div class="opt-text">
+          <div class="opt-en">Not sure — I don't know what AI tool means</div>
+          <div class="opt-gu">ખбर नथी — AI ટૂл เटले शूं ते नथी बाबत</div>
+          <div class="opt-hi">पता नहीं — AI टूल क्या होता है मुझे नहीं पता</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q1B — Beginner branch
+════════════════════════════════ -->
+<div class="screen" id="s-q1b">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-student">Question 2 of 3</span>
+    <div class="q-en">Have you heard of any of these?</div>
+    <div class="q-gu">શू तमे आमांथी कोईनूं नाम सांभळ्यूं छे?</div>
+    <div class="q-hi">क्या आपने इनमें से किसी के बारे में सुना है?</div>
+    <div class="options" id="opts-q1b">
+      <div class="opt" onclick="toggleMulti('q1b','chatgpt',this)"><div class="check-box square"></div><div class="opt-en">ChatGPT</div></div>
+      <div class="opt" onclick="toggleMulti('q1b','gemini',this)"><div class="check-box square"></div><div class="opt-en">Google Gemini</div></div>
+      <div class="opt" onclick="toggleMulti('q1b','siri',this)"><div class="check-box square"></div><div class="opt-en">Siri / Google Assistant (voice helper on phone)</div></div>
+      <div class="opt" onclick="toggleMulti('q1b','none',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">None of these</div><div class="opt-gu">एकेय नहीं / इनमें से कोई नहीं</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="go('s-q1c')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q1C — Barrier
+════════════════════════════════ -->
+<div class="screen" id="s-q1c">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-student">Question 3 of 3</span>
+    <div class="q-en">What has stopped you from trying AI tools so far?</div>
+    <div class="q-gu">AI ટૂл वापरवाथी शूं रोक्यूं छे?</div>
+    <div class="q-hi">अब तक AI tools आज़माने से क्या रोका?</div>
+    <div class="options">
+      <div class="opt" onclick="toggleMulti('q1c','no_phone',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">No smartphone / basic phone only</div><div class="opt-gu">स्मार्टफोन नथी</div></div></div>
+      <div class="opt" onclick="toggleMulti('q1c','no_net',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">No reliable internet access</div><div class="opt-gu">Internet नथी / धीमूं छे</div></div></div>
+      <div class="opt" onclick="toggleMulti('q1c','dont_know',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Don't know how to start</div><div class="opt-gu">कैसे शुरू करें पता नहीं</div></div></div>
+      <div class="opt" onclick="toggleMulti('q1c','no_need',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Never felt the need</div><div class="opt-gu">जरूरत नहीं लगी कभी</div></div></div>
+      <div class="opt" onclick="toggleMulti('q1c','lang',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Language barrier — not comfortable in English</div><div class="opt-gu">अंग्रेजी नहीं आती</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="state.layer='beginner';go('s-open')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q2 — Tools used
+════════════════════════════════ -->
+<div class="screen" id="s-q2">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-student">Layer 2</span>
+    <div class="q-en">Which AI tools have you used? <span style="font-size:13px;color:var(--text-3)">(select all that apply)</span></div>
+    <div class="q-gu">तमे कया AI ट्oolsनो उपयोग करयो छे?</div>
+    <div class="q-hi">आपने कौन से AI tools इस्तेमाल किए हैं?</div>
+    <div class="options">
+      <div class="opt" onclick="toggleMulti('q2','chatgpt',this)"><div class="check-box square"></div><div class="opt-en">ChatGPT</div></div>
+      <div class="opt" onclick="toggleMulti('q2','gemini',this)"><div class="check-box square"></div><div class="opt-en">Google Gemini</div></div>
+      <div class="opt" onclick="toggleMulti('q2','grammarly',this)"><div class="check-box square"></div><div class="opt-en">Grammarly</div></div>
+      <div class="opt" onclick="toggleMulti('q2','copilot',this)"><div class="check-box square"></div><div class="opt-en">Microsoft Copilot</div></div>
+      <div class="opt" onclick="toggleMulti('q2','social_ai',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">AI in YouTube, Instagram, or other apps</div><div class="opt-gu">YouTube / Instagram मां AI features</div></div></div>
+      <div class="opt" onclick="toggleMulti('q2','other',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Other / અन्य</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="go('s-q3')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q3 — Purpose
+════════════════════════════════ -->
+<div class="screen" id="s-q3">
+  <div class="card" style="margin-top:10px">
+    <div class="q-en">What do you mostly use AI for? <span style="font-size:13px;color:var(--text-3)">(select all that apply)</span></div>
+    <div class="q-gu">AI मोटाभागे शेना माटे वापरो छो?</div>
+    <div class="q-hi">AI का सबसे ज़्यादा किस काम में उपयोग करते हैं?</div>
+    <div class="options">
+      <div class="opt" onclick="toggleMulti('q3','homework',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Homework / assignments</div><div class="opt-gu">ગृहकार्य / assignment</div></div></div>
+      <div class="opt" onclick="toggleMulti('q3','translate',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Translating text</div><div class="opt-gu">ภाषांतर करवा</div></div></div>
+      <div class="opt" onclick="toggleMulti('q3','summarise',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Summarising content</div><div class="opt-gu">सारांश बनावा</div></div></div>
+      <div class="opt" onclick="toggleMulti('q3','search',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Searching / finding answers</div><div class="opt-gu">प्रश्नों के जवाब ढूंढना</div></div></div>
+      <div class="opt" onclick="toggleMulti('q3','fun',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Fun / timepass / entertainment</div><div class="opt-gu">मनोरंजन / timepass</div></div></div>
+      <div class="opt" onclick="toggleMulti('q3','creative',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Creative work — writing, images, ideas</div><div class="opt-gu">रचनात्मक काम — लेखन, images</div></div></div>
+      <div class="opt" onclick="toggleMulti('q3','professional',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Professional / career-related work</div><div class="opt-gu">व्यावसायिक काम</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="go('s-q4')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q4 — Language used
+════════════════════════════════ -->
+<div class="screen" id="s-q4">
+  <div class="card" style="margin-top:10px">
+    <div class="q-en">In which language do you use AI?</div>
+    <div class="q-gu">तमे AI कई भाषामां वापरो छो?</div>
+    <div class="q-hi">आप AI किस भाषा में उपयोग करते हैं?</div>
+    <div class="options">
+      <div class="opt" id="q4-en_only" onclick="selSingle('q4','en_only',this)"><div class="check-box"></div><div class="opt-en">English only</div></div>
+      <div class="opt" id="q4-gujarati" onclick="selSingle('q4','gujarati',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Gujarati</div><div class="opt-gu">ગujarati</div></div></div>
+      <div class="opt" id="q4-hindi" onclick="selSingle('q4','hindi',this)"><div class="check-box"></div><div class="opt-en">Hindi / हिंदी</div></div>
+      <div class="opt" id="q4-mix" onclick="selSingle('q4','mix',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Mix of languages</div><div class="opt-gu">ভाষाओं का मिश्रण</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="checkLayer3()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q5 — Interaction mode (Layer 3)
+════════════════════════════════ -->
+<div class="screen" id="s-q5">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-layer">Going deeper</span>
+    <div class="q-en">How do you interact with AI?</div>
+    <div class="q-gu">तमे AI साथे केवी रीते वात करो छो?</div>
+    <div class="q-hi">आप AI से कैसे बात करते हैं?</div>
+    <div class="options">
+      <div class="opt" id="q5-type" onclick="selSingle('q5','type',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">I type my questions</div><div class="opt-gu">Text type करूं छूं</div></div></div>
+      <div class="opt" id="q5-voice" onclick="selSingle('q5','voice',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">I use voice / speak to it</div><div class="opt-gu">आवाज़ से बात करूं छूं</div></div></div>
+      <div class="opt" id="q5-both" onclick="selSingle('q5','both',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Both — text and voice</div><div class="opt-gu">बंने — text अने voice</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="go('s-q6')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q6 — Prompting depth
+════════════════════════════════ -->
+<div class="screen" id="s-q6">
+  <div class="card" style="margin-top:10px">
+    <div class="q-en">Have you ever given AI a specific role or detailed instruction to get a better answer?</div>
+    <div class="q-gu">शूं तमे AI ने कोई specific भूमिका अथवा विस्तृत सूचना आपी छे?</div>
+    <div class="q-hi">क्या आपने AI को कोई specific role या detailed instruction दी है बेहतर जवाब पाने के लिए?</div>
+    <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Example: "Act as a career counsellor and help me write my resume" / "You are a Gujarati teacher, explain this concept simply"</p>
+    <div class="options">
+      <div class="opt" id="q6-yes_regular" onclick="selSingle('q6','yes_regular',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Yes — I do this regularly</div><div class="opt-gu">हां — नियमित रूप से करूं छूं</div></div></div>
+      <div class="opt" id="q6-tried" onclick="selSingle('q6','tried',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Tried once or twice</div><div class="opt-gu">एक-बे वार कर्यूं छे</div></div></div>
+      <div class="opt" id="q6-no" onclick="selSingle('q6','no',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">No — I just ask simple questions</div><div class="opt-gu">ना — बस सीधा सवाल पूछूं छूं</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="checkLayer4()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q7 — Power user
+════════════════════════════════ -->
+<div class="screen" id="s-q7">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-layer">Power User check</span>
+    <div class="q-en">Which of these have you done? <span style="font-size:13px;color:var(--text-3)">(select all that apply)</span></div>
+    <div class="q-gu">आमांथी तमे शूं करयूं छे?</div>
+    <div class="q-hi">इनमें से आपने क्या किया है?</div>
+    <div class="options">
+      <div class="opt" onclick="toggleMulti('q7','prompt_template',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Built a reusable prompt template</div><div class="opt-gu">Prompt template बनावी</div></div></div>
+      <div class="opt" onclick="toggleMulti('q7','api',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Used an AI API directly (code / developer access)</div></div></div>
+      <div class="opt" onclick="toggleMulti('q7','made_tool',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Built an AI-powered tool, app, or bot</div><div class="opt-gu">AI tool / app / bot बनाव्यूं</div></div></div>
+      <div class="opt" onclick="toggleMulti('q7','automated',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">Automated a repetitive task using AI</div><div class="opt-gu">AI थी कोई काम automate करयूं</div></div></div>
+      <div class="opt" onclick="toggleMulti('q7','none',this)"><div class="check-box square"></div><div class="opt-text"><div class="opt-en">None of these yet</div><div class="opt-gu">अभी एकेय नथी करयूं</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="go('s-q8')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: Q8 — Mentor willingness
+════════════════════════════════ -->
+<div class="screen" id="s-q8">
+  <div class="card" style="margin-top:10px">
+    <div class="q-en">Would you be open to helping peers in this batch who are beginners with AI?</div>
+    <div class="q-gu">शूं तमे AI शीखवा इच्छता साथीओने मदद करवा तैयार छो?</div>
+    <div class="q-hi">क्या आप इस batch में शुरुआती साथियों की AI सीखने में मदद करने के लिए तैयार हैं?</div>
+    <div class="options">
+      <div class="opt" id="q8-yes" onclick="selSingle('q8','yes',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Yes — happy to help</div><div class="opt-gu">हां — खुशी से</div></div></div>
+      <div class="opt" id="q8-maybe" onclick="selSingle('q8','maybe',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Maybe — depends on how</div><div class="opt-gu">शायद — कैसे करना होगा देखते हैं</div></div></div>
+      <div class="opt" id="q8-no" onclick="selSingle('q8','no',this)"><div class="check-box"></div><div class="opt-text"><div class="opt-en">Not right now</div><div class="opt-gu">अभी नहीं</div></div></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="state.layer='power';go('s-open')">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: OPEN QUESTION
+════════════════════════════════ -->
+<div class="screen" id="s-open">
+  <div class="card" style="margin-top:10px">
+    <span class="badge badge-student">Last question</span>
+    <div class="q-en" id="open-q-en">One last thing — share freely</div>
+    <div class="q-gu" id="open-q-gu"></div>
+    <div class="q-hi" id="open-q-hi" style="margin-bottom:14px"></div>
+    <textarea id="open-answer" placeholder="Type in any language — Gujarati, Hindi, or English is perfectly fine. / ગujarati, Hindi, या English — कोई भी भाषा चलेगी."></textarea>
+    <p style="font-size:12px;color:var(--text-3);margin-top:8px">No right or wrong answer. Share whatever comes to mind.</p>
+    <div class="nav-row" style="margin-top:14px">
+      <button class="btn btn-primary" id="submit-btn" onclick="submitSurvey()">Submit Survey ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCREEN: THANK YOU
+════════════════════════════════ -->
+<div class="screen" id="s-thanks">
+  <div class="success-box" style="margin-top:10px">
+    <div class="success-icon">✓</div>
+    <h2 style="color:var(--success);margin-bottom:6px">Response recorded!</h2>
+    <p style="font-family:'Noto Sans Gujarati',sans-serif;color:#1A7A4A;margin-bottom:0">
+      આbhaar! / धन्यवाद! तmaro जवाब नोंधाई गयो.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="profile-tier">
+      <div class="tier-icon" id="tier-icon"></div>
+      <div>
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-3);margin-bottom:3px">Your AI profile</div>
+        <div style="font-size:18px;font-weight:600;color:var(--text)" id="tier-title"></div>
+      </div>
+    </div>
+    <p id="tier-body" style="font-size:14px;line-height:1.7;color:var(--text-2)"></p>
+  </div>
+
+  <div class="card" style="text-align:center;padding:20px">
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:0">Your responses are confidential. Results will be used only by the program facilitators to design sessions for your growth.</p>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="watermark">Leadership Program · AI Survey · Powered by Claude</div>
+
+<script>
+const ADMIN_PASSWORD = "admin123";
+
+let state = {
+  lang: "en",
+  batch: "",
+  sheetUrl: "",
+  q1: "", q1b: [], q1c: [], q2: [], q3: [],
+  q4: "", q5: "", q6: "", q7: [], q8: "",
+  openAnswer: "", layer: ""
+};
+
+// Try restore admin config
+try {
+  state.batch = localStorage.getItem("lp_batch") || "";
+  state.sheetUrl = localStorage.getItem("lp_sheet") || "";
+} catch(e) {}
+
+const OPEN_QS = {
+  beginner: {
+    en: "AI is becoming part of everyday life — studies, jobs, even conversations. Is there anything about it that makes you curious, or anything that worries you?",
+    gu: "AI રोजिंदा जीवननो भाग बनी रह्यूं छे. शूं कोई बाबत तमने उत्सुक करे छे, या कोई बाबत चिंतित करे छे?",
+    hi: "AI रोज़मर्रा की ज़िंदगी का हिस्सा बनता जा रहा है। कोई बात है जो आपको उत्सुक करती है, या कोई चिंता है?"
+  },
+  casual: {
+    en: "Is there something you wished AI could help you with, but you didn't know how to use it for that? Or anything you tried that surprised you?",
+    gu: "शूं कोई एवी बाबत छे जेमां AI मदद करी शके, पण तमने ख्बर नथी केवी रीते? या कोई नवाजनक अनुभव?",
+    hi: "कोई ऐसी चीज़ है जो आप चाहते थे AI करे, पर नहीं जानते थे कैसे? या कोई अनुभव जिसने चौंका दिया?"
+  },
+  aware: {
+    en: "Is there a specific way you use AI that you think others around you are missing out on? Or something you're still trying to figure out?",
+    gu: "शूं तमे AI ने कोई खास रीते वापरो छो जे बीजाओ नथी वापरता? या कोई बाबत जे हजू पण समजवाना छो?",
+    hi: "कोई तरीका है जिससे आप AI का उपयोग करते हैं जो दूसरे नहीं करते? या कुछ ऐसा जो आप अभी भी समझने की कोशिश कर रहे हैं?"
+  },
+  power: {
+    en: "If you were teaching someone AI from scratch — what's the one thing you'd start with? And what's the one thing you're still trying to master yourself?",
+    gu: "जो तमे कोईने AI शरूआतथी शीखवाना होय — पेहेलूं शूं शीखवाशो? अने तमारी जाते शूं हजू शीखवाना छो?",
+    hi: "अगर आप किसी को AI बिल्कुल शुरू से सिखाते — सबसे पहले क्या सिखाते? और आप खुद अभी क्या master करने की कोशिश कर रहे हैं?"
+  }
+};
+
+const PROFILES = {
+  beginner: {
+    icon: "🌱", bg: "#E8F5EE", color: "#1A7A4A",
+    title: "Beginner — Fresh Start",
+    body: "You're at the very start of your AI journey — and that's completely fine. During the program, we will give you a Gujarati-friendly, step-by-step introduction. No prior experience needed."
+  },
+  casual: {
+    icon: "🚀", bg: "#EBF0FD", color: "#1A5CDB",
+    title: "Casual User",
+    body: "You've explored AI tools on your own — great start! The program will help you move from casual use to intentional, productive use. You'll be surprised how much more you can do."
+  },
+  aware: {
+    icon: "⚡", bg: "#F3E8FF", color: "#6B21A8",
+    title: "Aware User",
+    body: "You use AI thoughtfully and purposefully. The program will take you deeper — into prompt design, creative workflows, and domain-specific applications relevant to your field."
+  },
+  power: {
+    icon: "🔥", bg: "#FFF3E0", color: "#BF6000",
+    title: "Power User",
+    body: "You are among the most advanced in this batch. The program may invite you to be a peer mentor — helping others while deepening your own skills through teaching. Watch for this opportunity!"
+  }
+};
+
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateProgress(id);
+  if (id === 's-open') setOpenQ();
+}
+
+function updateProgress(id) {
+  const steps = ['s-entry','s-lang','s-profile','s-q1','s-q1b','s-q1c','s-q2','s-q3','s-q4','s-q5','s-q6','s-q7','s-q8','s-open','s-thanks'];
+  const idx = steps.indexOf(id);
+  const pct = idx < 0 ? 0 : Math.round((idx / (steps.length - 1)) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  const batchLabel = state.batch ? ` — ${state.batch}` : '';
+  document.getElementById('header-sub').textContent = `Leadership Program${batchLabel}`;
+}
+
+function setLang(l) { state.lang = l; }
+
+function selSingle(key, val, el) {
+  state[key] = val;
+  const parent = el.closest('.options') || el.parentElement;
+  parent.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleMulti(key, val, el) {
+  if (!state[key]) state[key] = [];
+  const arr = state[key];
+  const idx = arr.indexOf(val);
+  if (idx > -1) { arr.splice(idx, 1); el.classList.remove('selected'); }
+  else { arr.push(val); el.classList.add('selected'); }
+}
+
+function checkLayer3() {
+  const toolCount = state.q2.length;
+  const advPurpose = state.q3.some(p => ['creative','professional','summarise'].includes(p));
+  if (toolCount >= 2 || advPurpose) {
+    go('s-q5');
+  } else {
+    state.layer = 'casual';
+    go('s-open');
+  }
+}
+
+function checkLayer4() {
+  if (state.q6 === 'yes_regular') {
+    go('s-q7');
+  } else {
+    state.layer = 'aware';
+    go('s-open');
+  }
+}
+
+function setOpenQ() {
+  let lvl = state.layer;
+  if (!lvl) {
+    if (state.q1 === 'no' || state.q1 === 'notsure') lvl = 'beginner';
+    else if (state.q6 === 'yes_regular') lvl = 'power';
+    else if (state.q6) lvl = 'aware';
+    else lvl = 'casual';
+    state.layer = lvl;
+  }
+  const q = OPEN_QS[lvl];
+  document.getElementById('open-q-en').textContent = q.en;
+  document.getElementById('open-q-gu').textContent = q.gu;
+  document.getElementById('open-q-hi').textContent = q.hi;
+}
+
+function validateProfile() {
+  const stream = document.getElementById('inp-stream').value;
+  const medium = document.getElementById('inp-medium').value;
+  const bg = document.getElementById('inp-bg').value;
+  if (!stream || !medium || !bg) {
+    alert('Please fill all required fields (Course, Medium, Background).');
+    return;
+  }
+  go('s-q1');
+}
+
+function checkPass() {
+  const pass = document.getElementById('admin-pass').value;
+  if (pass === ADMIN_PASSWORD) {
+    document.getElementById('pass-err').style.display = 'none';
+    if (state.batch) document.getElementById('batch-name').value = state.batch;
+    if (state.sheetUrl) document.getElementById('sheet-url').value = state.sheetUrl;
+    go('s-admin');
+  } else {
+    document.getElementById('pass-err').style.display = 'block';
+  }
+}
+
+function saveAdmin() {
+  const bname = document.getElementById('batch-name').value.trim();
+  const surl = document.getElementById('sheet-url').value.trim();
+  if (!bname) { alert('Please enter a batch name before saving.'); return; }
+  state.batch = bname;
+  state.sheetUrl = surl;
+  try {
+    localStorage.setItem('lp_batch', bname);
+    localStorage.setItem('lp_sheet', surl);
+  } catch(e) {}
+  const statusEl = document.getElementById('admin-status');
+  if (surl) {
+    statusEl.className = 'info-box';
+    statusEl.innerHTML = '✓ Batch set to: <strong>' + bname + '</strong>. Google Sheet connected. Share this file link with students!';
+  } else {
+    statusEl.className = 'warn-box';
+    statusEl.innerHTML = '✓ Batch set to: <strong>' + bname + '</strong>. Google Sheet not connected yet — responses will only display on screen.';
+  }
+  alert('Saved! Batch: ' + bname + '\n\nShare this HTML file link with your students on WhatsApp. They will see the student survey.');
+}
+
+function copyScript() {
+  const code = document.getElementById('apps-script-code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const el = document.getElementById('copy-ok');
+    el.style.display = 'inline';
+    setTimeout(() => el.style.display = 'none', 2500);
+  }).catch(() => {
+    alert('Could not auto-copy. Please select all text in the code box and copy manually.');
+  });
+}
+
+async function submitSurvey() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  state.openAnswer = document.getElementById('open-answer').value;
+
+  const payload = {
+    batch: state.batch || "Not configured",
+    name: document.getElementById('inp-name').value || "Anonymous",
+    stream: document.getElementById('inp-stream').value,
+    medium: document.getElementById('inp-medium').value,
+    background: document.getElementById('inp-bg').value,
+    layer: state.layer,
+    tools: state.q2,
+    purpose: state.q3,
+    langUsed: state.q4,
+    interact: state.q5,
+    detailedPrompt: state.q6,
+    powerUse: state.q7,
+    mentor: state.q8,
+    openAnswer: state.openAnswer
+  };
+
+  if (state.sheetUrl) {
+    try {
+      await fetch(state.sheetUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch(e) { /* no-cors mode is expected, response is opaque */ }
+  }
+
+  // Show profile
+  const profile = PROFILES[state.layer] || PROFILES.casual;
+  const iconEl = document.getElementById('tier-icon');
+  iconEl.textContent = profile.icon;
+  iconEl.style.background = profile.bg;
+  iconEl.style.fontSize = '26px';
+  document.getElementById('tier-title').textContent = profile.title;
+  document.getElementById('tier-title').style.color = profile.color;
+  document.getElementById('tier-body').textContent = profile.body;
+
+  go('s-thanks');
+}
+</script>
+</body>
+</html>
