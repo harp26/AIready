@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0050)file:///C:/Users/HARESH/Downloads/survey_test.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Survey Test - Debug Version</title>
 <style>
@@ -80,43 +80,44 @@ button:disabled { background: #ccc; cursor: not-allowed; }
   <h2>🔍 Survey Connection Test</h2>
   <p>This is a minimal test to verify Google Sheets connection. Fill and submit to test.</p>
   
-  <div class="status info" id="config-status">
-    <strong>Configuration Status:</strong><br>
-    Loading...
+  <div class="status success" id="config-status">
+    <strong>✓ Configuration OK</strong><br>
+    Batch: Test Batch — May 2026<br>
+    Sheet URL: https://script.google.com/macros/s/AKfycbyRKWob0BPmAxcK4vomx...
   </div>
 
   <form id="testForm" onsubmit="handleSubmit(event)">
     <label>Name</label>
-    <input type="text" id="name" value="Test Student" required>
+    <input type="text" id="name" value="Test Student" required="">
 
     <label>Stream</label>
-    <select id="stream" required>
+    <select id="stream" required="">
       <option value="">-- Select --</option>
-      <option selected>Engineering</option>
+      <option selected="">Engineering</option>
       <option>Commerce</option>
       <option>MBA</option>
     </select>
 
     <label>Medium</label>
-    <select id="medium" required>
+    <select id="medium" required="">
       <option value="">-- Select --</option>
-      <option selected>English</option>
+      <option selected="">English</option>
       <option>Gujarati</option>
       <option>Hindi</option>
     </select>
 
     <label>Background</label>
-    <select id="background" required>
+    <select id="background" required="">
       <option value="">-- Select --</option>
-      <option selected>Urban — City</option>
+      <option selected="">Urban — City</option>
       <option>Semi-urban — Town</option>
       <option>Rural — Village</option>
     </select>
 
     <label>AI Experience (select one)</label>
-    <select id="aiExp" required>
+    <select id="aiExp" required="">
       <option value="">-- Select --</option>
-      <option selected>Never used AI</option>
+      <option selected="">Never used AI</option>
       <option>Used ChatGPT/Gemini</option>
       <option>Regular AI user</option>
       <option>Advanced user</option>
@@ -130,13 +131,18 @@ button:disabled { background: #ccc; cursor: not-allowed; }
 
   <div id="result-status" style="display:none"></div>
 
-  <div class="debug" id="debug-log">Debug log will appear here...</div>
+  <div class="debug" id="debug-log">[9:08:16 AM] INFO: Page loaded
+[9:08:16 AM] INFO: Configuration verified OK
+[9:08:16 AM] INFO: Batch: Test Batch — May 2026
+[9:08:16 AM] INFO: Sheet URL: https://script.google.com/macros/s/AKfycbyRKWob0BPmAxcK4vomxOMdHW2dHWvS85S-uCp4g6_PD31O5ez-z26ghgiL9kCNiir41A/exec
+[9:08:17 AM] INFO: Testing endpoint with GET request...
+[9:08:21 AM] SUCCESS: GET response: Survey endpoint is active.</div>
 </div>
 
 <script>
 // HARDCODED CONFIGURATION
 const CONFIG = {
-  sheetUrl: "https://script.google.com/macros/s/AKfycbyRKWob0BPmAxcK4vomxOMdHW2dHWvS85S-uCp4g6_PD31O5ez-z26ghgiL9kCNiir41A/exec",
+  sheetUrl: "sheetUrl: "https://script.google.com/macros/s/AKfycbxqOGVlktDSysRaQDUsz5UtdbCndgJJlluI2lb89Jul_pWzs97yqGzl3-imAloXEvl8bQ/exec",
   batch: "Test Batch — May 2026"
 };
 
@@ -282,5 +288,6 @@ async function testEndpoint() {
 setTimeout(testEndpoint, 1000);
 </script>
 
-</body>
-</html>
+
+
+</body></html>
