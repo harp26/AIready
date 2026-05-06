@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Test - Debug Version</title>
+<style>
+body { 
+  font-family: system-ui, sans-serif; 
+  max-width: 600px; 
+  margin: 40px auto; 
+  padding: 20px;
+  background: #f5f5f5;
+}
+.card { 
+  background: white; 
+  padding: 30px; 
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+h2 { margin-top: 0; color: #333; }
+label { 
+  display: block; 
+  margin: 15px 0 5px; 
+  font-weight: 500;
+  color: #555;
+}
+input, select, textarea { 
+  width: 100%; 
+  padding: 10px; 
+  border: 1px solid #ddd; 
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+textarea { min-height: 80px; resize: vertical; }
+button { 
+  width: 100%;
+  padding: 14px; 
+  background: #1a5cdb; 
+  color: white; 
+  border: none; 
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+}
+button:hover { background: #0f3e9e; }
+button:disabled { background: #ccc; cursor: not-allowed; }
+.status { 
+  padding: 15px; 
+  border-radius: 6px; 
+  margin: 15px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.info { background: #e3f2fd; border-left: 4px solid #2196f3; color: #1565c0; }
+.success { background: #e8f5e9; border-left: 4px solid #4caf50; color: #2e7d32; }
+.error { background: #ffebee; border-left: 4px solid #f44336; color: #c62828; }
+.debug { 
+  background: #f5f5f5; 
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 15px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🔍 Survey Connection Test</h2>
+  <p>This is a minimal test to verify Google Sheets connection. Fill and submit to test.</p>
+  
+  <div class="status info" id="config-status">
+    <strong>Configuration Status:</strong><br>
+    Loading...
+  </div>
+
+  <form id="testForm" onsubmit="handleSubmit(event)">
+    <label>Name</label>
+    <input type="text" id="name" value="Test Student" required>
+
+    <label>Stream</label>
+    <select id="stream" required>
+      <option value="">-- Select --</option>
+      <option selected>Engineering</option>
+      <option>Commerce</option>
+      <option>MBA</option>
+    </select>
+
+    <label>Medium</label>
+    <select id="medium" required>
+      <option value="">-- Select --</option>
+      <option selected>English</option>
+      <option>Gujarati</option>
+      <option>Hindi</option>
+    </select>
+
+    <label>Background</label>
+    <select id="background" required>
+      <option value="">-- Select --</option>
+      <option selected>Urban — City</option>
+      <option>Semi-urban — Town</option>
+      <option>Rural — Village</option>
+    </select>
+
+    <label>AI Experience (select one)</label>
+    <select id="aiExp" required>
+      <option value="">-- Select --</option>
+      <option selected>Never used AI</option>
+      <option>Used ChatGPT/Gemini</option>
+      <option>Regular AI user</option>
+      <option>Advanced user</option>
+    </select>
+
+    <label>Comments (optional)</label>
+    <textarea id="comments" placeholder="Any thoughts..."></textarea>
+
+    <button type="submit" id="submitBtn">Submit Test Survey</button>
+  </form>
+
+  <div id="result-status" style="display:none"></div>
+
+  <div class="debug" id="debug-log">Debug log will appear here...</div>
+</div>
+
+<script>
+// HARDCODED CONFIGURATION
+const CONFIG = {
+  sheetUrl: "https://script.google.com/macros/s/AKfycbyRKWob0BPmAxcK4vomxOMdHW2dHWvS85S-uCp4g6_PD31O5ez-z26ghgiL9kCNiir41A/exec",
+  batch: "Test Batch — May 2026"
+};
+
+let debugLog = [];
+
+function log(message, type = 'info') {
+  const timestamp = new Date().toLocaleTimeString();
+  debugLog.push(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+  document.getElementById('debug-log').textContent = debugLog.join('\n');
+  console.log(`[${type}]`, message);
+}
+
+// Verify configuration on load
+window.addEventListener('DOMContentLoaded', () => {
+  log('Page loaded');
+  
+  const configEl = document.getElementById('config-status');
+  
+  if (!CONFIG.sheetUrl) {
+    configEl.className = 'status error';
+    configEl.innerHTML = '<strong>❌ Error:</strong> Google Apps Script URL is not configured.';
+    log('Sheet URL missing', 'error');
+    return;
+  }
+  
+  if (!CONFIG.sheetUrl.endsWith('/exec')) {
+    configEl.className = 'status error';
+    configEl.innerHTML = '<strong>⚠ Warning:</strong> Sheet URL does not end with /exec<br>URL: ' + CONFIG.sheetUrl;
+    log('Sheet URL format incorrect', 'error');
+    return;
+  }
+  
+  configEl.className = 'status success';
+  configEl.innerHTML = `
+    <strong>✓ Configuration OK</strong><br>
+    Batch: ${CONFIG.batch}<br>
+    Sheet URL: ${CONFIG.sheetUrl.substring(0, 60)}...
+  `;
+  log('Configuration verified OK');
+  log('Batch: ' + CONFIG.batch);
+  log('Sheet URL: ' + CONFIG.sheetUrl);
+});
+
+async function handleSubmit(event) {
+  event.preventDefault();
+  
+  const submitBtn = document.getElementById('submitBtn');
+  const resultEl = document.getElementById('result-status');
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  resultEl.style.display = 'none';
+  
+  log('Form submitted');
+  
+  // Collect form data
+  const payload = {
+    batch: CONFIG.batch,
+    name: document.getElementById('name').value,
+    stream: document.getElementById('stream').value,
+    medium: document.getElementById('medium').value,
+    background: document.getElementById('background').value,
+    layer: document.getElementById('aiExp').value,
+    tools: [],
+    purpose: [],
+    langUsed: "",
+    interact: "",
+    detailedPrompt: "",
+    powerUse: [],
+    mentor: "",
+    openAnswer: document.getElementById('comments').value
+  };
+  
+  log('Payload prepared: ' + JSON.stringify(payload, null, 2));
+  
+  try {
+    log('Sending POST request to: ' + CONFIG.sheetUrl);
+    
+    const response = await fetch(CONFIG.sheetUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+      mode: 'no-cors'
+    });
+    
+    log('Request sent (no-cors mode - response will be opaque)');
+    log('Response type: ' + response.type);
+    log('Response status: ' + (response.status || 'opaque'));
+    
+    // With no-cors, we can't read the response, but if no error was thrown, it likely worked
+    resultEl.style.display = 'block';
+    resultEl.className = 'status success';
+    resultEl.innerHTML = `
+      <strong>✓ Request sent successfully!</strong><br><br>
+      Due to CORS restrictions, we cannot verify if the data reached the sheet.<br><br>
+      <strong>Next steps:</strong><br>
+      1. Open your Google Sheet<br>
+      2. Check if a new row appeared in the "Responses" tab<br>
+      3. Look for: "${payload.name}" with batch "${CONFIG.batch}"<br><br>
+      If the row appeared → ✓ Working!<br>
+      If not → There's a configuration issue with the Apps Script.
+    `;
+    log('Submit completed - check Google Sheet manually', 'success');
+    
+  } catch (error) {
+    log('ERROR: ' + error.message, 'error');
+    log('Error stack: ' + error.stack, 'error');
+    
+    resultEl.style.display = 'block';
+    resultEl.className = 'status error';
+    resultEl.innerHTML = `
+      <strong>❌ Request failed</strong><br><br>
+      Error: ${error.message}<br><br>
+      This usually means:<br>
+      • The Apps Script URL is incorrect<br>
+      • The deployment wasn't authorized<br>
+      • Network connectivity issue
+    `;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Another Test';
+  }
+}
+
+// Test the endpoint directly
+async function testEndpoint() {
+  log('Testing endpoint with GET request...');
+  try {
+    const response = await fetch(CONFIG.sheetUrl, {
+      method: 'GET',
+      mode: 'cors'
+    });
+    const text = await response.text();
+    log('GET response: ' + text, 'success');
+  } catch (error) {
+    log('GET test failed: ' + error.message, 'error');
+  }
+}
+
+// Auto-test endpoint on load
+setTimeout(testEndpoint, 1000);
+</script>
+
+</body>
+</html>
