@@ -963,8 +963,8 @@ let state = {
 
 // Try restore admin config
 try {
-  state.batch = localStorage.getItem("lp_batch") || "";
-  state.sheetUrl = localStorage.getItem("lp_sheet") || "";
+  state.batch = localStorage.getItem("lp_batch") || state.batch;
+  state.sheetUrl = localStorage.getItem("lp_sheet") || state.sheetUrl;
 } catch(e) {}
 
 const OPEN_QS = {
